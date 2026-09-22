@@ -5,7 +5,7 @@
     "language": "Telugu & English",
     "verse": "Psalm 91",
     "prayer": "May God guide, protect and bless you and your family.",
-    "image": "https://images.unsplash.com/photo-1504052434569-70ad5836ab65"
+    "image": "bible-card.png"
   },
   "mycard": {
     "name": "My TapID AI Card",
@@ -13,7 +13,7 @@
     "language": "Telugu & English",
     "verse": "Philippians 4:13",
     "prayer": "May God guide your journey and open the right doors.",
-     "image": "bible-card.png"
+    "image": "bible-card.png"
   },
   "family01": {
     "name": "Family Smart Card",
@@ -21,6 +21,6 @@
     "language": "Telugu & English",
     "verse": "Psalm 91",
     "prayer": "May God's protection and peace remain with your family.",
-    "image": "https://images.unsplash.com/photo-1511895426328-dc8714191300"
+    "image": "bible-card.png"
   }
 }
