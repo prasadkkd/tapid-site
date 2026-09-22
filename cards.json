@@ -1,13 +1,12 @@
 {
   "mgchurch": {
-    "name": "MG Church",
+    "name": "Mircle Church",
     "type": "TapID AI Christian Smart Card",
     "language": "Telugu & English",
     "verse": "Psalm 91",
     "prayer": "May God guide, protect and bless you and your family.",
     "image": "https://images.unsplash.com/photo-1504052434569-70ad5836ab65"
   },
-
   "mycard": {
     "name": "My TapID AI Card",
     "type": "Christian Smart Card",
@@ -16,7 +15,6 @@
     "prayer": "May God guide your journey and open the right doors.",
     "image": "https://images.unsplash.com/photo-1504052434569-70ad5836ab65"
   },
-
   "family01": {
     "name": "Family Smart Card",
     "type": "TapID AI Family Card",
