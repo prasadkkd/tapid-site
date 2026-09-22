@@ -1,190 +1,1001 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ask Jesus | Bible AI Engine | CoreDataLabs</title>
+<meta name="description" content="Instant scripture lookup and an AI-guided spiritual companion in English & Telugu — CoreDataLabs Bible Engine.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✝️</text></svg>">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap');
 
-    <title>TapID AI Smart Card</title>
+  :root{
+    --navy:#0d1117; --navy-2:#161b22; --line: rgba(255,255,255,.09);
+    --gold:#f1c40f; --gold-soft:#e5c07b;
+    --blue:#2f7fc1; --orange:#f4841f;
+    --text:#c9d1d9; --text-bright:#f0f6fc; --dim:#8b949e; --faint:#4b5158;
+    --safe-t: env(safe-area-inset-top, 0px); --safe-b: env(safe-area-inset-bottom, 0px);
+  }
+  *{ box-sizing:border-box; }
+  html,body{ height:100%; }
+  body{
+    margin:0; font-family:'Inter',sans-serif; color:var(--text);
+    background: radial-gradient(circle at 50% 0%, #131a24 0%, var(--navy) 55%, #08090c 100%);
+    min-height:100%;
+    padding: calc(var(--safe-t)) 0 calc(var(--safe-b));
+  }
+  .wrap{ max-width:920px; margin:0 auto; padding:18px 16px 60px; }
+  h1,h2,h3{ font-family:'Cinzel', serif; margin:0; }
+  a{ color:inherit; }
+  button{ font-family:inherit; }
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+  /* ---------------- brand bar ---------------- */
+  .brand-bar{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:12px 4px 14px; border-bottom:1px solid var(--line); margin-bottom:10px; gap:10px; flex-wrap:wrap;
+  }
+  .cdl-mark{ font-family:'Cinzel',serif; font-weight:700; letter-spacing:1px; font-size:.98rem; color:var(--text-bright); }
+  .cdl-mark span{ color:var(--orange); }
+  .cdl-tag{ font-size:.7rem; color:var(--faint); letter-spacing:.5px; text-transform:uppercase; }
 
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f5f7fa;
-            color: #222;
-        }
+  /* ---------------- splash ---------------- */
+  #splash{ display:flex; flex-direction:column; align-items:center; }
+  .cross-wrap{ display:flex; justify-content:center; margin:10px 0 4px; }
+  .cross-icon{
+    font-size:4rem; color:var(--gold); position:relative;
+    animation: pulseGlow 3.2s ease-in-out infinite;
+    filter: drop-shadow(0 0 6px rgba(241,196,15,.45));
+  }
+  .cross-icon::before{
+    content:""; position:absolute; inset:-40px; z-index:-1; border-radius:50%;
+    background: radial-gradient(circle, rgba(241,196,15,.18) 0%, rgba(241,196,15,0) 70%);
+    animation: rayPulse 3.2s ease-in-out infinite;
+  }
+  @keyframes pulseGlow{ 0%,100%{ transform:scale(1); filter:drop-shadow(0 0 6px rgba(241,196,15,.35)); } 50%{ transform:scale(1.12); filter:drop-shadow(0 0 26px rgba(241,196,15,.75)); } }
+  @keyframes rayPulse{ 0%,100%{ opacity:.35; } 50%{ opacity:.9; } }
 
-        .card {
-            max-width: 500px;
-            margin: 30px auto;
-            background: white;
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 5px 25px rgba(0,0,0,0.12);
-            text-align: center;
-        }
+  .splash-card{
+    background: linear-gradient(180deg, rgba(22,27,34,.96) 0%, rgba(13,17,23,.98) 100%);
+    border:1px solid var(--line); border-top:3px solid var(--gold); border-radius:18px;
+    padding:40px 26px 30px; text-align:center; box-shadow:0 20px 50px rgba(0,0,0,.55);
+    margin:10px auto 22px; max-width:640px; width:100%;
+  }
+  .splash-title{ font-size:2.05rem; color:var(--gold); letter-spacing:2px; margin:10px 0 8px; text-shadow:0 0 18px rgba(241,196,15,.25); }
+  .splash-subtitle{ color:var(--gold-soft); font-size:1rem; font-weight:600; margin-bottom:18px; letter-spacing:.3px; }
+  .splash-body{ color:var(--dim); font-size:.96rem; max-width:520px; margin:0 auto 8px; line-height:1.7; }
+  .brand-strip{ display:flex; justify-content:center; gap:8px; margin-top:20px; }
+  .brand-dot{ width:26px; height:5px; border-radius:3px; }
+  .enter-btn{
+    margin-top:22px; border:none; cursor:pointer; border-radius:12px;
+    padding:15px 26px; font-size:.98rem; font-weight:700; color:#141414;
+    background:linear-gradient(135deg, var(--gold) 0%, var(--gold-soft) 100%);
+    box-shadow:0 12px 30px -10px rgba(241,196,15,.55);
+    transition: transform .2s, box-shadow .2s; max-width:480px; width:100%;
+  }
+  .enter-btn:hover{ transform:translateY(-2px); box-shadow:0 16px 36px -8px rgba(241,196,15,.7); }
 
-        .photo {
-            width: 140px;
-            height: 140px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-bottom: 15px;
-        }
+  /* ---------------- header ---------------- */
+  .app-header{ text-align:center; padding-bottom:14px; border-bottom:1px solid var(--line); margin-bottom:8px; }
+  .app-header h2{ color:var(--gold); margin:6px 0 2px; letter-spacing:1px; font-size:1.35rem; }
+  .app-header .sub{ color:var(--dim); font-size:.82rem; margin-top:4px; line-height:1.6; }
 
-        h1 {
-            margin: 10px 0;
-        }
+  .welcome-banner{
+    background: rgba(46,160,67,.12); border:1px solid rgba(46,160,67,.4); color:#7ee2a8;
+    border-radius:10px; padding:10px 16px; font-size:.88rem; margin:12px 0;
+  }
 
-        .type {
-            color: #666;
-            margin-bottom: 20px;
-        }
+  /* ---------------- KPI ---------------- */
+  .kpi-row{ display:flex; gap:12px; margin:16px 0 6px; flex-wrap:wrap; }
+  .kpi-box{ flex:1; min-width:130px; background:var(--navy-2); border:1px solid var(--line); border-radius:12px; padding:13px 14px; text-align:center; }
+  .kpi-num{ font-family:'Cinzel',serif; font-size:1.55rem; color:var(--gold); font-weight:700; line-height:1.1; }
+  .kpi-label{ font-size:.66rem; letter-spacing:.5px; text-transform:uppercase; color:var(--dim); margin-top:4px; }
 
-        .section {
-            text-align: left;
-            margin-top: 18px;
-            padding: 15px;
-            background: #f7f7f7;
-            border-radius: 12px;
-        }
+  /* ---------------- verse of the day ---------------- */
+  .votd-label{ font-size:.72rem; letter-spacing:1.5px; text-transform:uppercase; color:var(--blue); font-weight:700; margin:18px 0 6px; }
 
-        .section h3 {
-            margin-top: 0;
-        }
+  /* ---------------- verse cards ---------------- */
+  .verse-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:12px; }
+  @media (max-width:640px){ .verse-grid{ grid-template-columns:1fr; } }
+  .verse-card{
+    background:var(--navy-2); border:1px solid var(--line); border-radius:14px; padding:20px 22px;
+    box-shadow:0 8px 24px rgba(0,0,0,.35); transition:border-color .2s, transform .2s;
+  }
+  .verse-card:hover{ border-color:var(--gold); transform:translateY(-2px); }
+  .verse-ref{ font-family:'Cinzel',serif; color:var(--gold); font-size:1.05rem; margin-bottom:10px; border-bottom:1px solid var(--line); padding-bottom:8px; }
+  .verse-body{ font-size:1rem; line-height:1.7; color:var(--text-bright); margin:0; }
+  .telugu-text{ font-size:1.08rem; line-height:1.8; color:var(--text-bright); margin:0; }
+  .pill{ display:inline-block; font-size:.63rem; letter-spacing:.5px; text-transform:uppercase; background:rgba(244,132,31,.12); color:var(--orange); border:1px solid rgba(244,132,31,.35); border-radius:20px; padding:3px 10px; margin-bottom:10px; }
 
-        .footer {
-            margin-top: 25px;
-            font-size: 13px;
-            color: #777;
-        }
+  /* ---------------- tabs ---------------- */
+  .tabs-nav{ display:flex; gap:6px; overflow-x:auto; margin:22px 0 4px; padding-bottom:6px; scrollbar-width:thin; }
+  .tabs-nav::-webkit-scrollbar{ height:5px; }
+  .tabs-nav::-webkit-scrollbar-thumb{ background:var(--line); border-radius:4px; }
+  .tab-btn{
+    flex:none; background:var(--navy-2); border:1px solid var(--line); color:var(--dim);
+    padding:9px 14px; border-radius:100px; font-size:.8rem; font-weight:600; cursor:pointer; white-space:nowrap;
+    transition: all .2s;
+  }
+  .tab-btn.active{ background:linear-gradient(135deg, rgba(241,196,15,.16), rgba(47,127,193,.1)); border-color:var(--gold); color:var(--gold); }
+  .tab-panel{ display:none; padding-top:14px; }
+  .tab-panel.active{ display:block; animation: fadein .35s ease; }
+  @keyframes fadein{ from{ opacity:0; transform:translateY(6px);} to{ opacity:1; transform:translateY(0);} }
 
-        .loading {
-            padding: 40px 10px;
-        }
-    </style>
+  /* ---------------- inputs ---------------- */
+  label.field-label{ display:block; font-size:.82rem; color:var(--text); margin-bottom:6px; font-weight:500; }
+  input[type=text], select{
+    width:100%; background:var(--navy-2); color:var(--text-bright); border:1px solid var(--line);
+    border-radius:10px; padding:12px 14px; font-size:.92rem; font-family:inherit; outline:none;
+    transition:border-color .2s;
+  }
+  input[type=text]:focus, select:focus{ border-color:var(--gold); }
+  input[type=text]::placeholder{ color:var(--faint); }
+  select{ appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%238b949e'%3E%3Cpath d='M5.5 7.5l4.5 4 4.5-4h-9z'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; padding-right:34px; }
+  .field{ margin-bottom:16px; }
+  .msg{ border-radius:10px; padding:10px 14px; font-size:.85rem; margin:10px 0; }
+  .msg.ok{ background:rgba(46,160,67,.12); border:1px solid rgba(46,160,67,.4); color:#7ee2a8; }
+  .msg.warn{ background:rgba(210,153,34,.12); border:1px solid rgba(210,153,34,.4); color:#e3b341; }
+  .msg.err{ background:rgba(248,81,73,.1); border:1px solid rgba(248,81,73,.4); color:#ff7b72; }
+  .muted-note{ color:var(--faint); font-size:.78rem; margin-top:6px; }
+
+  /* ---------------- banners / cards ---------------- */
+  .banner{ background:linear-gradient(135deg, rgba(244,132,31,.1) 0%, rgba(241,196,15,.06) 100%); border:1px solid var(--line); border-left:4px solid var(--orange); border-radius:12px; padding:14px 18px; margin:10px 0 4px; font-size:.9rem; color:var(--text-bright); }
+  .banner.blue{ background:linear-gradient(135deg, rgba(47,127,193,.1) 0%, rgba(241,196,15,.06) 100%); border-left-color:var(--blue); }
+  .banner.gold{ background:linear-gradient(135deg, rgba(241,196,15,.1) 0%, rgba(47,127,193,.07) 100%); border-left-color:var(--gold); }
+
+  .prayer-card{ background:linear-gradient(135deg, rgba(241,196,15,.08) 0%, rgba(47,127,193,.05) 100%); border:1px solid var(--line); border-left:4px solid var(--gold); border-radius:12px; padding:16px 20px; margin-top:12px; }
+  .prayer-label{ font-size:.7rem; letter-spacing:1.2px; text-transform:uppercase; color:var(--gold); font-weight:700; margin-bottom:8px; }
+  .prayer-text{ font-size:.96rem; line-height:1.7; color:var(--text-bright); font-style:italic; margin:0; }
+  .blessing-card{ background:linear-gradient(135deg, rgba(47,127,193,.1) 0%, rgba(241,196,15,.05) 100%); border:1px solid var(--line); border-left:4px solid var(--blue); border-radius:12px; padding:16px 20px; margin-top:12px; }
+  .importance-card{ background:linear-gradient(135deg, rgba(241,196,15,.08) 0%, rgba(47,127,193,.06) 100%); border:1px solid var(--line); border-left:4px solid var(--gold-soft); border-radius:12px; padding:16px 20px; margin-top:10px; }
+  .importance-title{ font-size:.7rem; letter-spacing:1.2px; text-transform:uppercase; color:var(--gold-soft); font-weight:700; margin-bottom:8px; }
+  .importance-text{ font-size:.9rem; line-height:1.75; color:var(--text); margin:0; }
+  .two-col{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  @media (max-width:640px){ .two-col{ grid-template-columns:1fr; } }
+  .section-divider-label{ font-family:'Cinzel',serif; color:var(--gold-soft); font-size:.9rem; letter-spacing:.8px; margin:20px 0 6px; border-bottom:1px solid var(--line); padding-bottom:6px; }
+
+  /* ---------------- radio pills (fasting day) ---------------- */
+  .pill-radio{ display:flex; gap:10px; margin:6px 0 4px; flex-wrap:wrap; }
+  .pill-radio button{
+    background:var(--navy-2); border:1px solid var(--line); color:var(--text); border-radius:100px;
+    padding:9px 18px; font-size:.85rem; cursor:pointer; font-weight:600; transition:all .2s;
+  }
+  .pill-radio button.active{ border-color:var(--blue); color:#8fc3ea; background:rgba(47,127,193,.14); }
+
+  /* ---------------- halo (popular vakyam) ---------------- */
+  .halo-wrap{ display:flex; justify-content:center; align-items:center; margin:6px 0 10px; }
+  .halo{ width:110px; height:110px; border-radius:50%; display:flex; align-items:center; justify-content:center; position:relative; background:radial-gradient(circle, rgba(241,196,15,.32) 0%, rgba(241,196,15,.08) 55%, rgba(241,196,15,0) 75%); animation:haloGlow 3.4s ease-in-out infinite; }
+  .halo::before,.halo::after{ content:""; position:absolute; border-radius:50%; border:1px solid rgba(241,196,15,.45); inset:-14px; animation:haloRing 3.4s ease-in-out infinite; }
+  .halo::after{ inset:-28px; border-color:rgba(47,127,193,.3); animation-delay:.6s; }
+  .halo-icon{ font-size:2.6rem; filter:drop-shadow(0 0 12px rgba(241,196,15,.65)); animation:haloFloat 3.4s ease-in-out infinite; }
+  @keyframes haloGlow{ 0%,100%{ transform:scale(1);} 50%{ transform:scale(1.08);} }
+  @keyframes haloRing{ 0%,100%{ opacity:.35; transform:scale(1);} 50%{ opacity:.85; transform:scale(1.18);} }
+  @keyframes haloFloat{ 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-4px);} }
+  .blessing-heading{ text-align:center; margin-bottom:6px; }
+  .blessing-heading h3{ color:var(--gold); letter-spacing:1px; margin:0 0 2px; font-size:1.2rem; }
+  .blessing-heading .sub{ color:var(--dim); font-size:.82rem; }
+
+  /* ---------------- NFC card ---------------- */
+  .nfc-card-wrap{ display:flex; justify-content:center; margin:16px 0 8px; }
+  .nfc-card{
+    width:100%; max-width:340px; height:200px; border-radius:20px; padding:20px 22px; position:relative;
+    background: linear-gradient(135deg, #1c3f6e 0%, #0d1117 55%, #08090c 100%);
+    border:1px solid #2a3f5f; box-shadow:0 18px 40px rgba(0,0,0,.55), inset 0 0 40px rgba(241,196,15,.05);
+    color:var(--text-bright); display:flex; flex-direction:column; justify-content:space-between;
+  }
+  .nfc-card .top-row{ display:flex; justify-content:space-between; align-items:flex-start; }
+  .cdl-chip{ font-family:'Cinzel',serif; font-size:.68rem; font-weight:700; letter-spacing:1px; color:var(--gold-soft); }
+  .cross-mini{ font-size:1.5rem; color:var(--gold); animation:pulseGlow 3.2s ease-in-out infinite; }
+  .card-title{ font-family:'Cinzel',serif; font-size:1.4rem; letter-spacing:1.5px; color:var(--gold); margin:6px 0 0; }
+  .card-sub{ font-size:.68rem; color:var(--dim); letter-spacing:.4px; }
+  .nfc-card .bottom-row{ display:flex; justify-content:space-between; align-items:center; }
+  .card-id{ font-size:.64rem; color:var(--faint); letter-spacing:1px; }
+  .nfc-wave{ display:inline-block; width:22px; height:22px; position:relative; }
+  .nfc-wave span{ position:absolute; border:2px solid var(--blue); border-radius:50%; opacity:0; animation:waveOut 2.4s ease-out infinite; }
+  .nfc-wave span:nth-child(1){ width:8px; height:8px; top:7px; left:7px; animation-delay:0s; }
+  .nfc-wave span:nth-child(2){ width:14px; height:14px; top:4px; left:4px; animation-delay:.5s; }
+  .nfc-wave span:nth-child(3){ width:20px; height:20px; top:1px; left:1px; animation-delay:1s; }
+  @keyframes waveOut{ 0%{ opacity:.9; transform:scale(.4);} 70%{ opacity:.15;} 100%{ opacity:0; transform:scale(1.3);} }
+
+  .demo-row{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:14px 0; }
+  @media (max-width:640px){ .demo-row{ grid-template-columns:1fr; } }
+  .demo-btn{
+    background:var(--navy-2); border:1px solid var(--line); color:var(--text-bright); border-radius:12px;
+    padding:12px 14px; font-size:.85rem; font-weight:600; cursor:pointer; text-align:center; transition:all .2s;
+  }
+  .demo-btn:hover{ border-color:var(--gold); transform:translateY(-2px); box-shadow:0 10px 22px -12px rgba(241,196,15,.5); }
+  .entry-log{ list-style:none; padding:0; margin:8px 0 0; }
+  .entry-log li{ font-size:.85rem; color:var(--text); padding:7px 0; border-bottom:1px dashed var(--line); }
+  .entry-log li:last-child{ border-bottom:none; }
+
+  /* ---------------- footer ---------------- */
+  .app-footer{ text-align:center; margin-top:44px; padding-top:16px; border-top:1px solid var(--line); color:var(--faint); font-size:.78rem; line-height:1.6; }
+  .app-footer b{ color:var(--dim); }
+
+  .toast{ position:fixed; left:50%; bottom:22px; transform:translateX(-50%) translateY(20px); background:#1c1f36; color:var(--text-bright); border:1px solid var(--line); padding:10px 18px; border-radius:100px; font-size:.82rem; font-weight:500; opacity:0; pointer-events:none; transition:all .3s; z-index:20; box-shadow:0 12px 30px -10px rgba(0,0,0,.6); }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+  @media (prefers-reduced-motion: reduce){ *{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; } }
+</style>
 </head>
-
 <body>
 
-<div class="card">
+<div class="wrap">
 
-    <div id="loading" class="loading">
-        Loading TapID AI Card...
+  <div class="brand-bar">
+    <div class="cdl-mark">CORE<span>DATA</span>LABS</div>
+    <div class="cdl-tag">Bible AI Engine &nbsp;•&nbsp; Smart NFC Infrastructure</div>
+  </div>
+
+  <div id="welcomeBanner" class="welcome-banner" style="display:none;"></div>
+
+  <!-- ===================== SPLASH ===================== -->
+  <section id="splash">
+    <div class="splash-card">
+      <div class="cross-wrap"><span class="cross-icon">✝</span></div>
+      <h1 class="splash-title">LORD JESUS WITH YOU</h1>
+      <div class="splash-subtitle">Bible AI Engine &nbsp;·&nbsp; Powered by CoreDataLabs</div>
+      <p class="splash-body">Instant scripture lookup and an AI-guided spiritual companion — in English &amp; తెలుగు. Built for seamless, real-time access during sermons, prayer, and daily reflection.</p>
+      <p class="splash-body" style="font-size:.8rem; color:var(--faint);" id="verseCountLine"></p>
+      <div class="brand-strip">
+        <div class="brand-dot" style="background:var(--gold);"></div>
+        <div class="brand-dot" style="background:var(--blue);"></div>
+        <div class="brand-dot" style="background:var(--orange);"></div>
+      </div>
+    </div>
+    <button class="enter-btn" id="enterBtn">✝&nbsp; Enter Bible Engine &nbsp;·&nbsp; వాక్యోపదేశం ప్రారంభించండి</button>
+  </section>
+
+  <!-- ===================== MAIN APP ===================== -->
+  <section id="mainApp" style="display:none;">
+
+    <div class="app-header">
+      <span style="font-size:1.6rem; color:var(--gold);">✝</span>
+      <h2>ASK JESUS &nbsp;·&nbsp; BIBLE AI ENGINE</h2>
+      <div class="sub">Instant reference lookup &nbsp;·&nbsp; guided auto-suggest &nbsp;·&nbsp; problem-to-verse &amp; prayer &nbsp;·&nbsp; fasting days &nbsp;·&nbsp; NFC card &amp; church entry</div>
     </div>
 
-    <div id="profile" style="display:none;">
-
-        <img id="photo" class="photo" src="" alt="Profile Photo">
-
-        <h1 id="name"></h1>
-
-        <div id="type" class="type"></div>
-
-        <div class="section">
-            <h3>📖 Bible Verse</h3>
-            <p id="verse"></p>
-        </div>
-
-        <div class="section">
-            <h3>🙏 Prayer</h3>
-            <p id="prayer"></p>
-        </div>
-
-        <div class="section">
-            <h3>🌐 Language</h3>
-            <p id="language"></p>
-        </div>
-
-        <div class="footer">
-            Powered by TapID AI • CoreDataLabs
-        </div>
-
+    
+<div id="tapidCardProfile" style="margin:14px 0 8px;">
+  <div style="background:linear-gradient(135deg,rgba(241,196,15,.10),rgba(47,127,193,.08));
+              border:1px solid var(--line);border-radius:16px;padding:18px;text-align:center;">
+    <img id="tapidCardImage" src="" alt="Card image"
+         style="width:105px;height:105px;border-radius:50%;object-fit:cover;
+                border:2px solid var(--gold);margin-bottom:10px;">
+    <h2 id="tapidCardName" style="color:var(--gold);margin:3px 0;"></h2>
+    <div id="tapidCardType" style="color:var(--dim);font-size:.85rem;"></div>
+    <div style="margin-top:10px;">
+      <span style="color:var(--gold-soft);font-weight:700;">📖 <span id="tapidCardVerse"></span></span>
+      <span style="color:var(--faint);"> &nbsp;•&nbsp; </span>
+      <span style="color:var(--text);">🌐 <span id="tapidCardLanguage"></span></span>
     </div>
+    <div class="prayer-card" style="text-align:left;margin-top:14px;">
+      <div class="prayer-label">🙏 Card Prayer</div>
+      <p id="tapidCardPrayer" class="prayer-text"></p>
+    </div>
+    <div style="font-size:.72rem;color:var(--faint);margin-top:8px;">
+      TapID AI • CoreDataLabs
+    </div>
+  </div>
+</div>
+
+    <div class="kpi-row">
+      <div class="kpi-box"><div class="kpi-num" id="kpiTaps">0</div><div class="kpi-label">🎴 NFC Taps</div></div>
+      <div class="kpi-box"><div class="kpi-num" id="kpiEntries">0</div><div class="kpi-label">⛪ Church Entries</div></div>
+      <div class="kpi-box"><div class="kpi-num" id="kpiSearched">0</div><div class="kpi-label">📖 Verses Searched</div></div>
+      <div class="kpi-box"><div class="kpi-num" id="kpiProblems">0</div><div class="kpi-label">🙏 Problems Answered</div></div>
+    </div>
+
+    <div class="votd-label">✨ Verse of the Day</div>
+    <div id="votd"></div>
+
+    <div class="tabs-nav" id="tabsNav"></div>
+
+    <!-- TAB 1 -->
+    <div class="tab-panel active" data-panel="instant">
+      <div class="field">
+        <label class="field-label">Enter a reference or keyword (e.g., Mark 10:52, Luka 1:37, Matthew 6:33, or "strength"):</label>
+        <input type="text" id="instantInput" placeholder="Type reference during sermon, or a word to search…">
+      </div>
+      <div id="instantResult"></div>
+    </div>
+
+    <!-- TAB 2 -->
+    <div class="tab-panel" data-panel="guided">
+      <div class="field">
+        <label class="field-label">Step 1 — Type a letter or transliterated name (e.g., eermiya, yeshayaa, yukob, luka, mark):</label>
+        <input type="text" id="guidedLetter" placeholder="Type 'e' for Eermiya, 'y' for Yeshayaa / Yukob, 'l' for Luka…">
+      </div>
+      <div class="field">
+        <label class="field-label">Step 2 — Select from auto-suggested verses (జాబితా నుండి ఎంచుకోండి):</label>
+        <select id="guidedSelect"></select>
+      </div>
+      <div id="guidedResult"></div>
+    </div>
+
+    <!-- TAB 3 -->
+    <div class="tab-panel" data-panel="problem">
+      <div class="banner">🙏 Share what's weighing on you — in English or Telugu — and get a scripture (వాక్యం) that speaks to it, with the exact chapter &amp; verse number.</div>
+      <div class="field">
+        <label class="field-label">What are you going through?</label>
+        <select id="problemSelect"></select>
+      </div>
+      <div class="field">
+        <label class="field-label">…or type it in your own words:</label>
+        <input type="text" id="problemFreeText" placeholder="e.g. I'm worried about my job, or నాకు భయంగా ఉంది">
+      </div>
+      <div id="problemResult"></div>
+    </div>
+
+    <!-- TAB 4 -->
+    <div class="tab-panel" data-panel="fasting">
+      <div class="banner blue">🕊️ Choose your fasting day for a suitable vakyam, a short fasting prayer, and a fasting blessing — in English &amp; తెలుగు (Wednesday &amp; Friday fasting).</div>
+      <div class="pill-radio" id="fastingDayPicker">
+        <button data-day="Wednesday" class="active">Wednesday · బుధవారం</button>
+        <button data-day="Friday">Friday · శుక్రవారం</button>
+      </div>
+      <div id="fastingResult"></div>
+    </div>
+
+    <!-- TAB 5 -->
+    <div class="tab-panel" data-panel="popular">
+      <div class="halo-wrap"><div class="halo"><span class="halo-icon">🙌</span></div></div>
+      <div class="blessing-heading">
+        <h3>✝ Kirthanalu 91 &amp; Adikandam 22:14</h3>
+        <div class="sub">Two of the most loved &amp; quoted vakyams in the Bible &nbsp;·&nbsp; బైబిల్‌లో అత్యంత ప్రియమైన వాక్యములు</div>
+      </div>
+      <div class="banner gold">🕊️ Psalm 91 (Kirthanalu 91) — a psalm of God's protection — and Genesis 22:14 (Adikandam 22:14) — "Jehovah Jireh, The LORD Will Provide" — together with a small daily prayer and the meaning of Wednesday &amp; Friday fasting blessings.</div>
+      <div id="popularContent"></div>
+    </div>
+
+    <!-- TAB 6 -->
+    <div class="tab-panel" data-panel="nfc">
+      <div style="display:flex; flex-wrap:wrap; gap:26px; align-items:center;">
+        <div class="nfc-card-wrap" style="flex:1; min-width:280px;">
+          <div class="nfc-card">
+            <div class="top-row">
+              <div class="cdl-chip">CORE<span style="color:var(--orange);">DATA</span>LABS</div>
+              <span class="cross-mini">✝</span>
+            </div>
+            <div>
+              <div class="card-title">JESUS</div>
+              <div class="card-sub">TAP TO OPEN BIBLE &nbsp;·&nbsp; వాక్యం వెంటనే</div>
+            </div>
+            <div class="bottom-row">
+              <div class="card-id">CDL-JESUS-0001</div>
+              <div class="nfc-wave"><span></span><span></span><span></span></div>
+            </div>
+          </div>
+        </div>
+        <div style="flex:1.3; min-width:260px;">
+          <h3 style="color:var(--text-bright); font-size:1.05rem; margin-bottom:8px;">✝ One Tap. Any Place. The Word Instantly.</h3>
+          <p style="font-size:.88rem; line-height:1.7; color:var(--text);">A CoreDataLabs-branded NFC card, carried instead of a printed Bible. Tap it on any phone — in the pew, at home, anywhere — and this app opens straight to the search screen. When the pastor says a verse, you're already there.</p>
+          <p style="font-size:.85rem; line-height:1.7; color:var(--dim);"><b style="color:var(--text);">How it works, physically:</b> the NFC chip (e.g. an NTAG213 sticker or card) is programmed once with this app's URL, e.g. <code style="color:var(--gold-soft);">https://yourapp.example/?card=CDL-JESUS-0001&amp;action=enter</code>. No companion app is needed — tapping the card opens that link automatically.</p>
+          <p style="font-size:.85rem; line-height:1.7; color:var(--dim);"><b style="color:var(--text);">Two ready-to-use tap modes:</b><br>· <code style="color:var(--gold-soft);">action=open</code> — instantly opens the Bible engine (everyday carry)<br>· <code style="color:var(--gold-soft);">action=enter</code> — same, plus logs a church entry for attendance tracking</p>
+        </div>
+      </div>
+
+      <div class="section-divider-label">🧪 Try the tap / scan flow (demo — no physical card or camera needed)</div>
+      <div class="demo-row">
+        <button class="demo-btn" id="btnSimOpen">🎴 Simulate Tap → Open App</button>
+        <button class="demo-btn" id="btnSimEnter">⛪ Simulate Tap → Church Entry</button>
+        <button class="demo-btn" id="btnSimQR">📷 Simulate Scan QR → Open App</button>
+      </div>
+
+      <div class="section-divider-label">📋 Recent Church Entries</div>
+      <ul class="entry-log" id="entryLog"></ul>
+      <div class="muted-note" id="entryEmptyNote">No entries logged yet — tap the card (or use the simulate button above) to log one.</div>
+    </div>
+
+    <div class="app-footer" id="mainFooter"></div>
+  </section>
 
 </div>
 
+<div class="toast" id="toast">Saved</div>
+
 <script>
+/* ============================================================
+   1. DATA — mirrors the Streamlit Bible Engine's bundled dataset
+   ============================================================ */
+const VERSES = [
+  ["Genesis","ఆదికాండము",1,1,"In the beginning God created the heavens and the earth.","ఆదియందు దేవుడు భూమ్యాకాశములను సృజించెను.","creation,beginning"],
+  ["Isaiah","యెషయా",41,10,"So do not fear, for I am with you; do not be dismayed, for I am your God. I will strengthen you and help you.","నీవు భయపడకుము నేను నీకు తోడైయున్నాను; దిగులుపడకుము నేను నీ దేవుడనై యున్నాను; నేను నిన్ను బలపరచుదును నీకు సహాయము చేయువాడను నేనే.","fear,anxiety,courage,strength"],
+  ["Jeremiah","యిర్మీయా",29,11,"'For I know the plans I have for you,' declares the LORD, 'plans to prosper you and not to harm you, plans to give you hope and a future.'","నేను మిమ్మునుగూర్చి ఉద్దేశించిన సంగతులను నేనెరుగుదును, అవి సమాధానకరమైన ఉద్దేశములే గాని హానికరమైనవి కావు; అవి మీకు నిరీక్షణకలిగించునట్లుగా భావికాలమునందు మేలుచేయు ఉద్దేశములే.","hope,future,plans,guidance,uncertainty"],
+  ["Matthew","మత్తయి",6,33,"But seek first his kingdom and his righteousness, and all these things will be given to you as well.","కాబట్టి మీరు ఆయన రాజ్యమును నీతిని మొదట వెదకుడి; అప్పుడవన్నియు మీకనుగ్రహించబడును.","worry,provision,priorities,anxiety,financial"],
+  ["Mark","మార్కు",10,52,"'Go,' said Jesus, 'your faith has healed you.' Immediately he received his sight and followed Jesus along the road.","యేసు—నీవు వెళ్లుము; నీ విశ్వాసము నిన్ను స్వస్థపరచెనని అతనితో చెప్పెను; వెంటనే అతడు చూపుపొంది, త్రోవన ఆయనవెంట వెళ్లెను.","healing,faith,illness"],
+  ["Luke","లూకా",1,37,"For no word from God will ever fail.","దేవుడు చెప్పిన ఏ మాటయైనను నిరర్థకము కానేరదని ఆమెతో చెప్పెను.","doubt,faith,impossible"],
+  ["John","యోహాను",3,16,"For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life.","దేవుడు లోకమును ఎంతో ప్రేమించెను, కాగా ఆయన తన అద్వితీయకుమారునిగా పుట్టిన వానియందు విశ్వాసముంచు ప్రతివాడును నశింపక నిత్యజీవము పొందునట్లు ఆయనను అనుగ్రహించెను.","salvation,love,eternal life,new life"],
+  ["Romans","రోమీయులకు",8,28,"And we know that in all things God works for the good of those who love him, who have been called according to his purpose.","దేవుని ప్రేమించువారికి, అనగా ఆయన సంకల్పముచొప్పున పిలువబడినవారికి సమస్తమును మేలుకలుగుటకై కలసి పనిచేయుచున్నవని యెరుగుదుము.","purpose,hardship,suffering,hope"],
+  ["Philippians","ఫిలిప్పీయులకు",4,13,"I can do all this through him who gives me strength.","నన్ను బలపరచువానియందే నేను సమస్తమును చేయగలను.","strength,weakness,ability"],
+  ["James","యాకోబు",1,5,"If any of you lacks wisdom, you should ask God, who gives generously to all without finding fault, and it will be given to you.","మీలో ఎవనికైనను జ్ఞానము కొదువగా ఉన్నయెడల అతడు ఎవనిని నిందింపక అందరికిని ధారాళముగ దయచేయు దేవుని అడుగవలెను, అప్పుడది అతనికి అనుగ్రహించబడును.","wisdom,confusion,decisions,guidance"],
+  ["Psalms","కీర్తనలు",23,1,"The LORD is my shepherd, I lack nothing.","యెహోవా నా కాపరి; నాకు లేమి కలుగదు.","comfort,provision,peace"],
+  ["Psalms","కీర్తనలు",46,1,"God is our refuge and strength, an ever-present help in trouble.","దేవుడు మనకు ఆశ్రయమును బలమునై యున్నాడు; ఆపత్కాలములలో ఆయన నమ్ముకొనదగిన సహాయకుడు.","fear,anxiety,trouble,refuge"],
+  ["Proverbs","సామెతలు",3,5,"Trust in the LORD with all your heart and lean not on your own understanding.","నీ స్వబుద్ధిని ఆధారము చేసికొనక నీ పూర్ణహృదయముతో యెహోవాయందు నమ్మకముంచుము.","guidance,decisions,trust,direction"],
+  ["Joshua","యెహోషువ",1,9,"Have I not commanded you? Be strong and courageous. Do not be afraid; do not be discouraged, for the LORD your God will be with you wherever you go.","నేను నీకు ఆజ్ఞాపించలేదా? బలముగలిగి ధైర్యముగా ఉండుము; భయపడకుము, విస్మయమొందకుము; నీవు వెళ్లు ప్రతి స్థలములోను నీ దేవుడైన యెహోవా నీకు తోడైయుండును.","fear,courage,loneliness,new beginnings"],
+  ["Revelation","ప్రకటన",21,4,"He will wipe every tear from their eyes. There will be no more death or mourning or crying or pain, for the old order of things has passed away.","దేవుడు వారి కన్నుల ప్రతి బాష్పబిందువును తుడిచివేయును; మరణము ఇక ఉండదు, దుఃఖమైనను ఏడ్పైనను వేదనయైనను ఇక ఉండదు; మొదటి సంగతులు గతించిపోయెను.","grief,loss,death,comfort,pain"],
+  ["Psalms","కీర్తనలు",91,1,"Whoever dwells in the shelter of the Most High will rest in the shadow of the Almighty.","మహోన్నతుని మరుగున నివసించువాడు సర్వశక్తుని నీడను విశ్రమించును.","protection,fear,anxiety,refuge,psalm91"],
+  ["Psalms","కీర్తనలు",91,2,"I will say of the LORD, 'He is my refuge and my fortress, my God, in whom I trust.'","యెహోవాను గూర్చి నేను ఈలాగు చెప్పుకొందును—ఆయన నా ఆశ్రయము, నా కోట, నేను నమ్ముకొను నా దేవుడు.","protection,trust,refuge,psalm91"],
+  ["Psalms","కీర్తనలు",91,4,"He will cover you with his feathers, and under his wings you will find refuge; his faithfulness will be your shield.","ఆయన తన రెక్కలతో నిన్ను కప్పును, ఆయన రెక్కల క్రింద నీవు ఆశ్రయము పొందుదువు; ఆయన సత్యము డాలుగాను కేడెముగాను నీకుండును.","protection,comfort,refuge,psalm91"],
+  ["Psalms","కీర్తనలు",91,11,"For he will command his angels concerning you to guard you in all your ways.","నీవు నడుచు ప్రతి మార్గమున నిన్ను కాపాడుటకు ఆయన తన దూతలకు నిన్నుగూర్చి ఆజ్ఞ ఇచ్చును.","protection,guidance,refuge,psalm91"],
+  ["Genesis","ఆదికాండము",22,14,"So Abraham called that place 'The LORD Will Provide.' And to this day it is said, 'On the mountain of the LORD it will be provided.'","అబ్రాహాము ఆ చోటికి యెహోవా-యీరే అను పేరు పెట్టెను; నేటివరకు యెహోవా పర్వతమందు సమకూర్చబడునని దాని పేరు చెప్పబడుచున్నది.","provision,faith,trust,financial,adikandam"]
+];
 
-async function loadCard() {
+const BOOK_NAME_MAP = {
+  gen:"Genesis", genesis:"Genesis", aadi:"Genesis", aadikandamu:"Genesis",
+  yesh:"Isaiah", yeshaya:"Isaiah", yeshayaa:"Isaiah", isaiah:"Isaiah", isa:"Isaiah",
+  yere:"Jeremiah", yeremiya:"Jeremiah", eermiya:"Jeremiah", jer:"Jeremiah", jeremiah:"Jeremiah",
+  josh:"Joshua", joshua:"Joshua", yehoshuva:"Joshua",
+  psalm:"Psalms", psalms:"Psalms", keerthanalu:"Psalms", keertanalu:"Psalms",
+  prov:"Proverbs", proverbs:"Proverbs", sametalu:"Proverbs",
+  mat:"Matthew", matt:"Matthew", matthew:"Matthew", mathew:"Matthew", mottayi:"Matthew",
+  mark:"Mark", marku:"Mark", maruku:"Mark", mar:"Mark",
+  luke:"Luke", luka:"Luke", luk:"Luke",
+  john:"John", joh:"John", yohanu:"John",
+  rom:"Romans", romans:"Romans", romi:"Romans",
+  phil:"Philippians", philippians:"Philippians",
+  jas:"James", james:"James", yakobu:"James", yukob:"James", yakob:"James",
+  rev:"Revelation", revelation:"Revelation", prakatana:"Revelation"
+};
 
-    try {
+const PROBLEM_OPTIONS = [
+  ["😨 Fear / Anxiety","భయం / ఆందోళన",["fear","anxiety","courage"],
+   "Lord, calm my fearful heart. Let Your promise 'I am with you' be my strength today. Amen.",
+   "ప్రభూ, నా భయపడే హృదయాన్ని శాంతపరచు. 'నేను నీతో ఉన్నాను' అనే నీ మాటే నాకు బలం కమ్ము. ఆమేన్."],
+  ["💔 Loneliness","ఒంటరితనం",["loneliness","alone"],
+   "Lord, remind me I am never alone — You walk beside me always. Fill this lonely moment with Your presence. Amen.",
+   "ప్రభూ, నేను ఒంటరిని కాదని నాకు గుర్తుచేయి — నీవు ఎల్లప్పుడూ నా వెంటే ఉన్నావు. ఈ ఒంటరి క్షణాన్ని నీ సన్నిధితో నింపు. ఆమేన్."],
+  ["😢 Grief / Loss","దుఃఖం / నష్టం",["grief","loss","death","comfort"],
+   "Lord, wipe my tears and comfort my breaking heart. Hold me close in this loss. Amen.",
+   "ప్రభూ, నా కన్నీళ్లను తుడిచి, నా విరిగిన హృదయాన్ని ఓదార్చు. ఈ నష్టంలో నన్ను నీ దగ్గరగా ఉంచుకో. ఆమేన్."],
+  ["🤔 Guidance / Decisions","మార్గదర్శకత్వం",["guidance","decisions","direction","trust"],
+   "Lord, guide my steps today. Where I cannot see the way, let me trust in Your understanding. Amen.",
+   "ప్రభూ, ఈ రోజు నా అడుగులను నడిపించు. నాకు దారి కనబడనప్పుడు, నీ జ్ఞానంపై నమ్మకముంచేలా చేయి. ఆమేన్."],
+  ["💰 Financial Worry","ఆర్థిక చింత",["worry","provision","financial","priorities"],
+   "Lord, You know my needs before I even ask. Provide for me and free my heart from worry. Amen.",
+   "ప్రభూ, నేను అడగకముందే నా అవసరాలు నీకు తెలుసు. నాకు సమకూర్చి, చింత నుండి నా హృదయాన్ని విడిపించు. ఆమేన్."],
+  ["😔 Weakness / Need Strength","బలహీనత",["strength","weakness","ability"],
+   "Lord, in my weakness be my strength. Let me do what You call me to, through You. Amen.",
+   "ప్రభూ, నా బలహీనతలో నీవే నాకు బలం కమ్ము. నీవు నాకు పిలిచినది నీ ద్వారానే చేయగలిగేలా చేయి. ఆమేన్."],
+  ["❓ Doubt / Faith","సందేహం / విశ్వాసం",["doubt","faith","impossible"],
+   "Lord, help my unbelief. Strengthen my faith in Your word that never fails. Amen.",
+   "ప్రభూ, నా అవిశ్వాసానికి సహాయము చేయి. ఎన్నటికీ విఫలం కాని నీ వాక్యంపై నా విశ్వాసాన్ని బలపరచు. ఆమేన్."],
+  ["🤒 Illness / Healing","అనారోగ్యం / స్వస్థత",["healing","illness","faith"],
+   "Lord Jesus, touch my body and spirit with Your healing hand. Let my faith bring me wholeness. Amen.",
+   "ప్రభువైన యేసూ, నీ స్వస్థపరచు హస్తముతో నా శరీరాన్ని, ఆత్మను తాకు. నా విశ్వాసము నాకు స్వస్థతనిచ్చునుగాక. ఆమేన్."],
+  ["🧭 Wisdom / Confusion","జ్ఞానం / గందరగోళం",["wisdom","confusion","decisions"],
+   "Lord, You give wisdom generously — grant me clarity where I am confused. Amen.",
+   "ప్రభూ, నీవు ధారాళముగా జ్ఞానమిచ్చువాడవు — నేను గందరగోళంలో ఉన్నచోట స్పష్టతనిమ్ము. ఆమేన్."],
+  ["⛈️ Hardship / Suffering","కష్టాలు",["purpose","hardship","suffering","hope"],
+   "Lord, work all things for good even now. Give me hope through this hardship. Amen.",
+   "ప్రభూ, ఇప్పుడు కూడా అన్ని విషయాలను మేలుకు మార్చు. ఈ కష్టకాలంలో నాకు నిరీక్షణ దయచేయి. ఆమేన్."],
+  ["✝️ Salvation / New Life","రక్షణ / నూతన జీవితం",["salvation","love","new life","eternal life"],
+   "Lord Jesus, thank You for eternal life through Your love. Renew my life in You today. Amen.",
+   "ప్రభువైన యేసూ, నీ ప్రేమ ద్వారా నిత్యజీవాన్నిచ్చినందుకు కృతజ్ఞతలు. ఈ రోజు నా జీవితాన్ని నీలో నూతనపరచు. ఆమేన్."]
+];
 
-        // Example:
-        // /mgchurch → mgchurch
-        // /mycard   → mycard
-        // /family01 → family01
+const GENERIC_PRAYER = {
+  en:"Lord, hear my prayer and be near me now, in this very moment. Amen.",
+  te:"ప్రభూ, నా ప్రార్థన వినుము, ఈ క్షణంలో నా దగ్గర ఉండుము. ఆమేన్."
+};
 
-        const path = window.location.pathname;
+const PROBLEM_SYNONYMS = {
+  scared:"fear", afraid:"fear", worried:"worry", anxious:"anxiety", stressed:"anxiety",
+  alone:"loneliness", lonely:"loneliness", sad:"grief", died:"death", dying:"death",
+  lost:"loss", confused:"confusion", decision:"decisions", money:"financial", job:"provision",
+  sick:"illness", weak:"weakness", tired:"weakness", doubt:"doubt", faith:"faith",
+  wisdom:"wisdom", guidance:"guidance", suffering:"suffering", pain:"pain", hope:"hope", healing:"healing"
+};
 
-        const cardId = path
-            .replace(/^\/+|\/+$/g, '')
-            .toLowerCase();
+const FASTING_DATA = {
+  Wednesday:{ day_te:"బుధవారం", refs:[["Joshua",1,9],["Philippians",4,13]],
+    prayer_en:"Lord, as I fast this Wednesday, strengthen my body and my spirit. Be my courage and my strength today. Amen.",
+    prayer_te:"ప్రభూ, ఈ బుధవారం ఉపవాసం ఉంటూ, నా శరీరాన్ని, ఆత్మను బలపరచు. ఈ రోజు నా ధైర్యంగా, నా బలంగా ఉండు. ఆమేన్.",
+    blessing_en:"May this Wednesday fast draw you nearer to God's strength and courage, renewing your faith for the week ahead.",
+    blessing_te:"ఈ బుధవారం ఉపవాసం మిమ్మల్ని దేవుని బలం, ధైర్యానికి దగ్గరగా తీసుకువెళ్లి, రాబోయే వారానికి మీ విశ్వాసాన్ని నూతనపరచుగాక."
+  },
+  Friday:{ day_te:"శుక్రవారం", refs:[["John",3,16],["Psalms",46,1]],
+    prayer_en:"Lord Jesus, on this Friday fast I remember Your love and Your sacrifice. Be my refuge and my strength. Amen.",
+    prayer_te:"ప్రభువైన యేసూ, ఈ శుక్రవారం ఉపవాసంలో నీ ప్రేమను, త్యాగాన్ని జ్ఞాపకం చేసుకుంటున్నాను. నీవే నా ఆశ్రయము, నా బలము కమ్ము. ఆమేన్.",
+    blessing_en:"May this Friday fast, kept in remembrance of Christ's sacrifice, bring you peace, refuge, and renewed faith.",
+    blessing_te:"క్రీస్తు త్యాగాన్ని జ్ఞాపకం చేసుకుంటూ చేసే ఈ శుక్రవారం ఉపవాసం మీకు శాంతిని, ఆశ్రయమును, నూతన విశ్వాసమును తెచ్చుగాక."
+  }
+};
 
-        // Load card database
-        const response = await fetch('/cards.json');
+const POPULAR = {
+  psalm91_en:"Psalm 91 is one of the most loved chapters in the whole Bible — a psalm of protection, promising that whoever dwells 'in the shelter of the Most High' is kept safe under God's wings and watched over by His angels.",
+  psalm91_te:"కీర్తనలు 91 బైబిల్ మొత్తంలో అత్యంత ప్రియమైన అధ్యాయాలలో ఒకటి — ఇది సంరక్షణ కీర్తన; 'మహోన్నతుని మరుగున' నివసించువారు దేవుని రెక్కల క్రింద సురక్షితంగా ఉండి, ఆయన దూతలచే కాపాడబడుదురని వాగ్దానం చేస్తుంది.",
+  genesis_en:"Genesis 22:14 records the moment Abraham names the mountain 'Jehovah Jireh' — 'The LORD Will Provide.' It is one of the most quoted vakyams for trusting God in moments of testing, need, and uncertainty.",
+  genesis_te:"ఆదికాండము 22:14లో అబ్రాహాము ఆ కొండకు 'యెహోవా-యీరే' — 'యెహోవా సమకూర్చును' అని పేరు పెట్టిన క్షణం నమోదైంది. పరీక్ష, అవసరం, సందేహ సమయాల్లో దేవునిపై నమ్మకముంచుటకు అత్యధికంగా ఉదహరించబడు వాక్యములలో ఇది ఒకటి.",
+  daily_prayer_en:"Heavenly Father, thank You for a new day. Cover me under the shelter of Your wings like Psalm 91 promises, and provide for every need as You did on the mountain of Jehovah Jireh. Guard my going out and my coming in, guide my words and my work, and let Your peace rest over my home and family today. In Jesus' name, Amen.",
+  daily_prayer_te:"పరలోకమందున్న తండ్రీ, ఈ నూతన దినానికి కృతజ్ఞతలు. కీర్తనలు 91 వాగ్దానం చేసినట్లుగా నన్ను నీ రెక్కల నీడలో కప్పుము, యెహోవా-యీరే కొండపై చేసినట్లు నా ప్రతి అవసరాన్ని సమకూర్చుము. నా వెళ్లుటను నా రాకడను కాపాడుము, నా మాటలను నా పనిని నడిపించుము, ఈ రోజు నా ఇంటిపైన నా కుటుంబముపైన నీ సమాధానము నిలిచియుండుగాక. యేసుక్రీస్తు నామమున, ఆమేన్.",
+  daily_prayer_explain_en:"A short prayer you can pray first thing each morning — it leans on Psalm 91's promise of protection and Genesis 22:14's promise of provision, so you begin the day resting in both.",
+  daily_prayer_explain_te:"ప్రతి ఉదయం మొదట ప్రార్థించదగిన చిన్న ప్రార్థన — ఇది కీర్తనలు 91 ఇచ్చు సంరక్షణ వాగ్దానంపైనను, ఆదికాండము 22:14 ఇచ్చు సమకూర్పు వాగ్దానంపైనను ఆధారపడి ఉంటుంది, కనుక మీరు రెండింటిలోనూ విశ్రాంతి తీసుకుంటూ దినం ప్రారంభించగలరు.",
+  fasting_importance_en:"Many believers keep a short fast on Wednesdays and Fridays as a small, steady discipline — Wednesday recalling the day Christ was betrayed, and Friday recalling His crucifixion at Calvary. Fasting these two days is not a rule for salvation; it is a willing act of self-denial that quiets the body so the heart can listen better, and it is traditionally paired with extra prayer, scripture reading, and works of charity. Those who keep it in faith and humility, without boasting of it, are promised a special closeness to God and a quiet blessing on their day (Matthew 6:16-18).",
+  fasting_importance_te:"చాలామంది విశ్వాసులు బుధవారము, శుక్రవారము చిన్న ఉపవాసమును ఒక స్థిరమైన ఆధ్యాత్మిక అలవాటుగా ఆచరిస్తారు — బుధవారము క్రీస్తు అప్పగించబడిన దినమును, శుక్రవారము కల్వరి సిలువపై ఆయన మరణమును జ్ఞాపకం చేసుకుంటూ. ఈ రెండు దినముల ఉపవాసము రక్షణకు నియమము కాదు; ఇది శరీరమును అణచివేసి హృదయము మరింత బాగుగా వినుటకు దోహదపడు స్వచ్ఛంద త్యాగము, సాధారణంగా అధిక ప్రార్థన, వాక్య పఠనము, దానధర్మములతో కలిసి ఆచరించబడుతుంది. దీనిని గొప్పలు చెప్పుకొనక విశ్వాసముతో, వినయముతో ఆచరించువారికి దేవునితో ప్రత్యేక సాన్నిహిత్యము, వారి దినముపై నిశ్శబ్ద దీవెన వాగ్దానము చేయబడినది (మత్తయి 6:16-18)."
+};
 
-        if (!response.ok) {
-            throw new Error("Unable to load cards database");
-        }
-
-        const cards = await response.json();
-
-        const card = cards[cardId];
-
-        if (!card) {
-
-            document.getElementById("loading").innerHTML = `
-                <h2>Card Not Found</h2>
-                <p>Please check the TapID AI card URL.</p>
-            `;
-
-            return;
-        }
-
-        // Display card information
-
-        document.getElementById("name").textContent =
-            card.name || "";
-
-        document.getElementById("type").textContent =
-            card.type || "";
-
-        document.getElementById("verse").textContent =
-            card.verse || "";
-
-        document.getElementById("prayer").textContent =
-            card.prayer || "";
-
-        document.getElementById("language").textContent =
-            card.language || "";
-
-        document.getElementById("photo").src =
-            card.image || "";
-
-        document.getElementById("loading").style.display =
-            "none";
-
-        document.getElementById("profile").style.display =
-            "block";
-
-    } catch (error) {
-
-        document.getElementById("loading").innerHTML = `
-            <h2>TapID AI</h2>
-            <p>Unable to load the card.</p>
-        `;
-
-        console.error(error);
-    }
+/* ============================================================
+   2. STATE (persisted locally in this browser via localStorage)
+   ============================================================ */
+const STATS_KEY = "cdl_bible_engine_stats_v1";
+function loadStats(){
+  try{
+    const raw = localStorage.getItem(STATS_KEY);
+    if(raw) return JSON.parse(raw);
+  }catch(e){}
+  return { nfcTaps:0, churchEntries:0, versesSearched:0, problemsAnswered:0, entryLog:[] };
+}
+function saveStats(s){ try{ localStorage.setItem(STATS_KEY, JSON.stringify(s)); }catch(e){} }
+let STATS = loadStats();
+function bump(key, note){
+  STATS[key] = (STATS[key]||0) + 1;
+  if(note){ STATS.entryLog = STATS.entryLog || []; STATS.entryLog.push(note); }
+  saveStats(STATS);
+  renderKPI();
+  if(key === "churchEntries") renderEntryLog();
+}
+function renderKPI(){
+  document.getElementById('kpiTaps').textContent = STATS.nfcTaps || 0;
+  document.getElementById('kpiEntries').textContent = STATS.churchEntries || 0;
+  document.getElementById('kpiSearched').textContent = STATS.versesSearched || 0;
+  document.getElementById('kpiProblems').textContent = STATS.problemsAnswered || 0;
 }
 
-loadCard();
+/* ============================================================
+   3. HELPERS
+   ============================================================ */
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function verseCardHtml(row, badge){
+  const [bEn,bTe,ch,v,tEn,tTe] = row;
+  const badgeHtml = badge ? `<div class="pill">${escapeHtml(badge)}</div>` : "";
+  return `<div class="verse-grid">
+    <div class="verse-card">${badgeHtml}<div class="verse-ref">📖 ${bEn} ${ch}:${v}</div><p class="verse-body">"${escapeHtml(tEn)}"</p></div>
+    <div class="verse-card">${badgeHtml}<div class="verse-ref">📖 ${bTe} ${ch}:${v}</div><p class="telugu-text">"${escapeHtml(tTe)}"</p></div>
+  </div>`;
+}
+function parseReference(q){
+  const clean = q.toLowerCase().trim();
+  const m = clean.match(/^([a-zA-Z]+)\s*(\d+)[:\s]+(\d+)$/);
+  if(!m) return null;
+  const mapped = BOOK_NAME_MAP[m[1]];
+  if(!mapped) return null;
+  return [mapped, parseInt(m[2],10), parseInt(m[3],10)];
+}
+function fetchVerse(book, ch, v){
+  return VERSES.find(r => r[0]===book && r[2]===ch && r[3]===v) || null;
+}
+function keywordSearch(q){
+  const term = q.toLowerCase();
+  return VERSES.filter(r => r[4].toLowerCase().includes(term) || r[5].includes(q));
+}
+function getMatchingSuggestions(text, limit=10){
+  if(!text) return [];
+  const clean = text.toLowerCase().trim();
+  let mappedBook = null;
+  for(const prefix in BOOK_NAME_MAP){
+    if(clean.startsWith(prefix)){ mappedBook = BOOK_NAME_MAP[prefix]; break; }
+  }
+  const term = (mappedBook || clean);
+  const out = [];
+  for(const r of VERSES){
+    const [bEn,bTe,ch,v,tEn,tTe] = r;
+    if(bEn.toLowerCase().includes(term.toLowerCase()) || bTe.includes(term) || tEn.toLowerCase().includes(term.toLowerCase()) || tTe.includes(term)){
+      const label = `${bEn} ${ch}:${v} (${bTe} ${ch}:${v})`;
+      if(!out.includes(label)) out.push(label);
+    }
+    if(out.length >= limit) break;
+  }
+  return out;
+}
+function extractTags(text){
+  const words = (text.toLowerCase().match(/[a-zA-Z]+/g)) || [];
+  return [...new Set(words.map(w => PROBLEM_SYNONYMS[w] || w))];
+}
+function findVersesForTags(tags, limit=3){
+  if(!tags.length) return [];
+  return VERSES.filter(r => tags.some(t => r[6].includes(t))).slice(0, limit);
+}
+function findVersesForFreeText(text, limit=3){
+  const tags = extractTags(text);
+  let rows = findVersesForTags(tags, limit);
+  if(rows.length) return rows;
+  const term = text.toLowerCase().trim();
+  return VERSES.filter(r => r[4].toLowerCase().includes(term) || r[5].includes(text.trim())).slice(0, limit);
+}
+function findProblemEntryForTags(tags){
+  if(!tags.length) return null;
+  let best=null, bestScore=0;
+  for(const entry of PROBLEM_OPTIONS){
+    const score = entry[2].filter(t => tags.includes(t)).length;
+    if(score > bestScore){ best = entry; bestScore = score; }
+  }
+  return best;
+}
+function prayerCardHtml(en, te, label){
+  label = label || "🙏 A Small Prayer for You";
+  return `<div class="two-col">
+    <div class="prayer-card"><div class="prayer-label">${label}</div><p class="prayer-text">${escapeHtml(en)}</p></div>
+    <div class="prayer-card"><div class="prayer-label">${label} · తెలుగు</div><p class="prayer-text">${escapeHtml(te)}</p></div>
+  </div>`;
+}
+function blessingCardHtml(en, te, label){
+  label = label || "✝ Fasting Blessing";
+  return `<div class="two-col">
+    <div class="blessing-card"><div class="prayer-label">${label}</div><p class="prayer-text">${escapeHtml(en)}</p></div>
+    <div class="blessing-card"><div class="prayer-label">${label} · తెలుగు</div><p class="prayer-text">${escapeHtml(te)}</p></div>
+  </div>`;
+}
+function importanceCardHtml(en, te, label){
+  label = label || "✨ Why This Matters";
+  return `<div class="two-col">
+    <div class="importance-card"><div class="importance-title">${label}</div><p class="importance-text">${escapeHtml(en)}</p></div>
+    <div class="importance-card"><div class="importance-title">${label} · తెలుగు</div><p class="importance-text">${escapeHtml(te)}</p></div>
+  </div>`;
+}
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(()=>t.classList.remove('show'), 2200);
+}
 
+/* ============================================================
+   4. TAB 1 — Instant lookup / keyword search
+   ============================================================ */
+const instantInput = document.getElementById('instantInput');
+instantInput.addEventListener('input', () => {
+  const q = instantInput.value.trim();
+  const out = document.getElementById('instantResult');
+  if(!q){ out.innerHTML = ""; return; }
+  const ref = parseReference(q);
+  if(ref){
+    const row = fetchVerse(...ref);
+    if(row){
+      out.innerHTML = `<div class="msg ok">⚡ Verse retrieved instantly!</div>` + verseCardHtml(row);
+      bump('versesSearched');
+    } else {
+      out.innerHTML = `<div class="msg warn">Verse '${escapeHtml(q)}' not found in the current dataset. Try another reference.</div>`;
+    }
+    return;
+  }
+  const results = keywordSearch(q);
+  if(results.length){
+    out.innerHTML = `<div class="msg ok">Found ${results.length} matching verse(s) for "${escapeHtml(q)}":</div>` +
+      results.map(r => verseCardHtml(r)).join("");
+    bump('versesSearched');
+  } else {
+    out.innerHTML = `<div class="msg err">No exact verse match found. Try a reference like "Luke 1:37" or a keyword like "strength".</div>`;
+  }
+});
+
+/* ============================================================
+   5. TAB 2 — Guided auto-suggest
+   ============================================================ */
+const guidedLetter = document.getElementById('guidedLetter');
+const guidedSelect = document.getElementById('guidedSelect');
+const guidedResult = document.getElementById('guidedResult');
+function refreshGuidedOptions(){
+  const text = guidedLetter.value.trim();
+  let options;
+  if(text){
+    options = getMatchingSuggestions(text);
+    if(!options.length) options = ["No matches — try another letter…"];
+  } else {
+    options = ["Select or type above…"].concat(VERSES.slice(0,8).map(r => `${r[0]} ${r[2]}:${r[3]} (${r[1]} ${r[2]}:${r[3]})`));
+  }
+  guidedSelect.innerHTML = options.map(o => `<option>${escapeHtml(o)}</option>`).join("");
+}
+function showGuidedSelection(){
+  const sel = guidedSelect.value;
+  if(!sel || sel.startsWith("Select or type") || sel.startsWith("No matches")){ guidedResult.innerHTML = ""; return; }
+  const clean = sel.split(" (")[0].trim();
+  const parts = clean.split(" ");
+  const chv = parts[parts.length-1];
+  if(chv.includes(":")){
+    const book = parts.slice(0, -1).join(" ");
+    const [ch, v] = chv.split(":").map(n => parseInt(n,10));
+    const row = fetchVerse(book, ch, v);
+    if(row){
+      guidedResult.innerHTML = `<div class="msg ok">⚡ Verse retrieved instantly!</div>` + verseCardHtml(row);
+      bump('versesSearched');
+    }
+  }
+}
+guidedLetter.addEventListener('input', refreshGuidedOptions);
+guidedSelect.addEventListener('change', showGuidedSelection);
+refreshGuidedOptions();
+
+/* ============================================================
+   6. TAB 3 — Ask Your Problem
+   ============================================================ */
+const problemSelect = document.getElementById('problemSelect');
+problemSelect.innerHTML = ["Select a situation…"].concat(PROBLEM_OPTIONS.map(p=>p[0])).map(l => `<option>${escapeHtml(l)}</option>`).join("");
+const problemFreeText = document.getElementById('problemFreeText');
+const problemResult = document.getElementById('problemResult');
+
+function renderProblemMatch(){
+  const free = problemFreeText.value.trim();
+  const sel = problemSelect.value;
+  let rows = [], label = null, prayer = null;
+
+  if(free){
+    rows = findVersesForFreeText(free, 3);
+    label = `“${free}”`;
+    const best = findProblemEntryForTags(extractTags(free));
+    prayer = best ? [best[3], best[4]] : [GENERIC_PRAYER.en, GENERIC_PRAYER.te];
+  } else if(sel && sel !== "Select a situation…"){
+    const chosen = PROBLEM_OPTIONS.find(p => p[0] === sel);
+    rows = findVersesForTags(chosen[2], 3);
+    label = `${chosen[0]} (${chosen[1]})`;
+    prayer = [chosen[3], chosen[4]];
+  }
+
+  if(!label){ problemResult.innerHTML = ""; return; }
+  if(rows.length){
+    let html = `<p style="font-size:.88rem; color:var(--text);"><b>Vakyam for ${escapeHtml(label)} — ${rows.length} verse(s):</b></p>`;
+    html += rows.map(r => verseCardHtml(r, "Recommended Vakyam")).join("");
+    if(prayer) html += prayerCardHtml(prayer[0], prayer[1]);
+    problemResult.innerHTML = html;
+    bump('problemsAnswered');
+  } else {
+    problemResult.innerHTML = `<div class="msg warn">No matching verse found yet for that — try a different wording.</div>`;
+  }
+}
+problemSelect.addEventListener('change', () => { problemFreeText.value=""; renderProblemMatch(); });
+problemFreeText.addEventListener('input', renderProblemMatch);
+
+/* ============================================================
+   7. TAB 4 — Fasting Days Prayer
+   ============================================================ */
+const fastingResult = document.getElementById('fastingResult');
+function renderFasting(day){
+  const info = FASTING_DATA[day];
+  let html = `<h4 style="font-family:'Cinzel',serif; color:var(--text-bright); font-size:1rem; margin:14px 0 8px;">🕊️ ${day} Fasting &nbsp;·&nbsp; ${info.day_te} ఉపవాసం</h4>`;
+  html += `<p style="font-size:.85rem; color:var(--text);"><b>Suitable Vakyam(s) for this fast:</b></p>`;
+  for(const [book, ch, v] of info.refs){
+    const row = fetchVerse(book, ch, v);
+    if(row) html += verseCardHtml(row, `${day} Fasting Vakyam`);
+  }
+  html += prayerCardHtml(info.prayer_en, info.prayer_te, "🙏 Fasting Prayer");
+  html += blessingCardHtml(info.blessing_en, info.blessing_te);
+  fastingResult.innerHTML = html;
+  bump('problemsAnswered');
+}
+document.getElementById('fastingDayPicker').addEventListener('click', (e) => {
+  const btn = e.target.closest('button[data-day]');
+  if(!btn) return;
+  document.querySelectorAll('#fastingDayPicker button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderFasting(btn.dataset.day);
+});
+
+/* ============================================================
+   8. TAB 5 — Popular Vakyam & Blessing (static content)
+   ============================================================ */
+function renderPopular(){
+  let html = `<div class="section-divider-label">📖 Kirthanalu (Psalms) 91</div>`;
+  for(const [b,ch,v] of [["Psalms",91,1],["Psalms",91,2],["Psalms",91,4],["Psalms",91,11]]){
+    const row = fetchVerse(b,ch,v);
+    if(row) html += verseCardHtml(row, "Kirthanalu 91");
+  }
+  html += importanceCardHtml(POPULAR.psalm91_en, POPULAR.psalm91_te, "✨ About Psalm 91");
+
+  html += `<div class="section-divider-label">📖 Adikandam (Genesis) 22:14</div>`;
+  const gen = fetchVerse("Genesis",22,14);
+  if(gen) html += verseCardHtml(gen, "Adikandam 22:14 · Jehovah Jireh");
+  html += importanceCardHtml(POPULAR.genesis_en, POPULAR.genesis_te, "✨ About Genesis 22:14");
+
+  html += `<div class="section-divider-label">🙏 A Small Daily Prayer</div>`;
+  html += prayerCardHtml(POPULAR.daily_prayer_en, POPULAR.daily_prayer_te, "🙏 Daily Prayer");
+  html += importanceCardHtml(POPULAR.daily_prayer_explain_en, POPULAR.daily_prayer_explain_te, "📝 Explanatory Note");
+
+  html += `<div class="section-divider-label">🕊️ Importance of Wednesday &amp; Friday Fasting</div>`;
+  html += importanceCardHtml(POPULAR.fasting_importance_en, POPULAR.fasting_importance_te, "✨ Why Fast on These Days");
+
+  html += `<h5 style="font-family:'Cinzel',serif; color:var(--text-bright); margin:20px 0 8px;">🕊️ Fasting Blessings for Both Days</h5>`;
+  for(const day of ["Wednesday","Friday"]){
+    const info = FASTING_DATA[day];
+    html += `<p style="font-size:.85rem; color:var(--text); margin:10px 0 0;"><b>${day} · ${info.day_te}</b></p>`;
+    html += blessingCardHtml(info.blessing_en, info.blessing_te);
+  }
+  document.getElementById('popularContent').innerHTML = html;
+}
+
+/* ============================================================
+   9. TAB 6 — NFC Card & Church Entry
+   ============================================================ */
+function renderEntryLog(){
+  const log = (STATS.entryLog || []).slice(-8).reverse();
+  const ul = document.getElementById('entryLog');
+  const note = document.getElementById('entryEmptyNote');
+  ul.innerHTML = log.map(e => `<li>✝ ${escapeHtml(e)}</li>`).join("");
+  note.style.display = log.length ? "none" : "block";
+}
+function timestamp(){
+  const d = new Date();
+  const pad = n => String(n).padStart(2,'0');
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+document.getElementById('btnSimOpen').addEventListener('click', () => {
+  bump('nfcTaps');
+  showWelcome("CDL-JESUS-0001", "open");
+});
+document.getElementById('btnSimEnter').addEventListener('click', () => {
+  bump('nfcTaps');
+  bump('churchEntries', `CDL-JESUS-0001 · ${timestamp()}`);
+  showWelcome("CDL-JESUS-0001", "enter");
+});
+document.getElementById('btnSimQR').addEventListener('click', () => {
+  bump('nfcTaps');
+  showWelcome("CDL-JESUS-QR", "open");
+});
+function showWelcome(card, action){
+  const el = document.getElementById('welcomeBanner');
+  const label = action === "enter" ? "checked in at church entrance" : "opened the Bible engine";
+  el.textContent = `✝ Card ${card} tapped — ${label}. Welcome!`;
+  el.style.display = "block";
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+/* ============================================================
+   10. TABS NAVIGATION
+   ============================================================ */
+const TABS = [
+  ["instant","🔍 Instant Lookup & Keyword Search"],
+  ["guided","🧭 Guided Auto-Suggest"],
+  ["problem","🙏 Ask Your Problem"],
+  ["fasting","🕊️ Fasting Days Prayer"],
+  ["popular","✝️ Popular Vakyam & Blessing"],
+  ["nfc","🎴 NFC Card & Church Entry"]
+];
+const tabsNav = document.getElementById('tabsNav');
+tabsNav.innerHTML = TABS.map((t,i) => `<button class="tab-btn${i===0?' active':''}" data-tab="${t[0]}">${t[1]}</button>`).join("");
+tabsNav.addEventListener('click', (e) => {
+  const btn = e.target.closest('.tab-btn');
+  if(!btn) return;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelector(`.tab-panel[data-panel="${btn.dataset.tab}"]`).classList.add('active');
+});
+
+/* ============================================================
+   11. VERSE OF THE DAY (deterministic per calendar day)
+   ============================================================ */
+function verseOfTheDay(){
+  const d = new Date();
+  const dayNum = Math.floor(d.getTime() / 86400000);
+  const idx = dayNum % VERSES.length;
+  return VERSES[idx];
+}
+
+/* ============================================================
+   12. CHURCH BELL — synthesized softly, once, on entering
+   ============================================================ */
+function playBell(){
+  try{
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const partials = [[196,1.0,2.4],[294,0.55,2.0],[392,0.35,1.6],[494,0.22,1.2],[588,0.14,0.9]];
+    const now = ctx.currentTime;
+    const master = ctx.createGain();
+    master.gain.value = 0.16;
+    master.connect(ctx.destination);
+    partials.forEach(([freq, amp, decay]) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine'; osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0, now);
+      gain.gain.linearRampToValueAtTime(amp, now + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + decay);
+      osc.connect(gain); gain.connect(master);
+      osc.start(now); osc.stop(now + decay + 0.1);
+    });
+  }catch(e){ /* audio unsupported — silently skip */ }
+}
+
+/* ============================================================
+   13. BOOTSTRAP
+   ============================================================ */
+document.getElementById('verseCountLine').textContent = `${VERSES.length} verses loaded (sample dataset)`;
+document.getElementById('mainFooter').innerHTML =
+  `CoreDataLabs © ${new Date().getFullYear()} &nbsp;|&nbsp; Spiritual AI Engine &amp; Smart NFC Infrastructure<br><b>coredatalabs.in</b> &nbsp;·&nbsp; HSR Layout, Bangalore &nbsp;·&nbsp; ML · XAI · GenAI · RAG`;
+
+document.getElementById('enterBtn').addEventListener('click', () => {
+  playBell();
+  document.getElementById('splash').style.display = 'none';
+  document.getElementById('mainApp').style.display = 'block';
+
+  renderKPI();
+  document.getElementById('votd').innerHTML = verseCardHtml(verseOfTheDay());
+  renderPopular();
+  renderFasting('Wednesday');
+  renderEntryLog();
+});
+
+// Support NFC-style deep links: ?card=CDL-JESUS-0001&action=enter
+(function handleQueryParams(){
+  const qp = new URLSearchParams(window.location.search);
+  const card = qp.get('card');
+  if(card){
+    document.getElementById('enterBtn').click();
+    bump('nfcTaps');
+    const action = qp.get('action') || 'open';
+    if(action === 'enter') bump('churchEntries', `${card} · ${timestamp()}`);
+    showWelcome(card, action);
+  }
+})();
+</script>
+
+<script>
+(async function tapidPublicCardMode(){
+  try {
+    const pathId = window.location.pathname.replace(/^\/+|\/+$/g,'').toLowerCase();
+    const cardId = pathId || 'mgchurch';
+    const res = await fetch('/cards.json', {cache:'no-store'});
+    if(!res.ok) throw new Error('cards.json not available');
+    const cards = await res.json();
+    const card = cards[cardId];
+
+    if(!card){
+      const splashTitle = document.querySelector('.splash-title');
+      const splashBody = document.querySelector('.splash-body');
+      if(splashTitle) splashTitle.textContent = 'TapID AI Card Not Found';
+      if(splashBody) splashBody.textContent = 'Please check the NFC / QR card URL.';
+      return;
+    }
+
+    // Fill card-specific profile.
+    const setText = (id, value) => {
+      const el = document.getElementById(id);
+      if(el) el.textContent = value || '';
+    };
+    setText('tapidCardName', card.name);
+    setText('tapidCardType', card.type);
+    setText('tapidCardVerse', card.verse);
+    setText('tapidCardLanguage', card.language);
+    setText('tapidCardPrayer', card.prayer);
+
+    const img = document.getElementById('tapidCardImage');
+    if(img && card.image) img.src = card.image;
+
+    // Make this a direct public NFC/QR experience.
+    document.title = (card.name || 'TapID AI') + ' | TapID AI Christian Smart Card';
+    const splashTitle = document.querySelector('.splash-title');
+    const splashSubtitle = document.querySelector('.splash-subtitle');
+    const splashBodies = document.querySelectorAll('.splash-body');
+    if(splashTitle) splashTitle.textContent = card.name || 'TapID AI';
+    if(splashSubtitle) splashSubtitle.textContent = (card.type || 'Christian Smart Card') + ' · Tap to Open';
+    if(splashBodies[0]) splashBodies[0].textContent =
+      'Your Bible verses, questions, prayers, fasting-day guidance and faith resources — in Telugu & English.';
+    if(splashBodies[1]) splashBodies[1].textContent =
+      'No customer login. No email. No password. Just tap the NFC card or scan the QR code.';
+
+    // Directly open the existing Bible engine. No Streamlit involved.
+    const enter = document.getElementById('enterBtn');
+    if(enter) enter.click();
+
+    // Change the app heading to the card identity.
+    const h2 = document.querySelector('.app-header h2');
+    if(h2) h2.textContent = (card.name || 'ASK JESUS') + ' · BIBLE AI ENGINE';
+
+    // Replace the demo NFC card ID with the actual public card id.
+    const cardIdEl = document.querySelector('.card-id');
+    if(cardIdEl) cardIdEl.textContent = 'TAPID-' + cardId.toUpperCase();
+
+    // Record the public tap locally only; this does not require a server/session.
+    try {
+      const key = 'tapid_public_taps_' + cardId;
+      const count = Number(localStorage.getItem(key) || 0) + 1;
+      localStorage.setItem(key, String(count));
+    } catch(e) {}
+  } catch(err) {
+    console.error(err);
+    const splashBody = document.querySelector('.splash-body');
+    if(splashBody) splashBody.textContent = 'Unable to load this TapID AI card. Please try again.';
+  }
+})();
 </script>
 
 </body>
