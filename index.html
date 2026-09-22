@@ -4,100 +4,188 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>TapID AI | Smart Christian Card</title>
-
-    <meta name="description"
-          content="Tap, Read, Pray and be Blessed. A smart Christian NFC card for Bible verses, prayer and devotional moments.">
+    <title>TapID AI Smart Card</title>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
             font-family: Arial, sans-serif;
-            background: #fffaf5;
+            background: #f5f7fa;
             color: #222;
+        }
+
+        .card {
+            max-width: 500px;
+            margin: 30px auto;
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.12);
             text-align: center;
         }
 
-        .container {
-            max-width: 600px;
-            margin: auto;
-            padding: 50px 20px;
-        }
-
-        .cross {
-            font-size: 45px;
+        .photo {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
         }
 
         h1 {
-            font-size: 32px;
-            margin-bottom: 10px;
+            margin: 10px 0;
         }
 
-        h2 {
-            font-weight: normal;
-            color: #8b1e1e;
+        .type {
+            color: #666;
+            margin-bottom: 20px;
         }
 
-        p {
-            font-size: 18px;
-            line-height: 1.6;
+        .section {
+            text-align: left;
+            margin-top: 18px;
+            padding: 15px;
+            background: #f7f7f7;
+            border-radius: 12px;
         }
 
-        .button {
-            display: inline-block;
-            margin: 12px;
-            padding: 14px 25px;
-            background: #8b1e1e;
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: bold;
+        .section h3 {
+            margin-top: 0;
         }
 
         .footer {
-            margin-top: 40px;
-            font-size: 14px;
-            color: #666;
+            margin-top: 25px;
+            font-size: 13px;
+            color: #777;
+        }
+
+        .loading {
+            padding: 40px 10px;
         }
     </style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="card">
 
-    <div class="cross">✝️</div>
+    <div id="loading" class="loading">
+        Loading TapID AI Card...
+    </div>
 
-    <h1>TapID AI</h1>
+    <div id="profile" style="display:none;">
 
-    <h2>Tap • Read • Pray • Be Blessed</h2>
+        <img id="photo" class="photo" src="" alt="Profile Photo">
 
-    <p>
-        A simple and meaningful way to keep
-        God's Word close to your heart.
-    </p>
+        <h1 id="name"></h1>
 
-    <p>
-        📖 Bible Verses<br>
-        🙏 Daily Prayer<br>
-        🎄 Christmas Devotion<br>
-        ❤️ Messages of Faith
-    </p>
+        <div id="type" class="type"></div>
 
-   <a href="https://prasadkkd-bible-nfc-new-app-w6nyr0.streamlit.app/">
-    Open Bible Smart Card
-</a>
+        <div class="section">
+            <h3>📖 Bible Verse</h3>
+            <p id="verse"></p>
+        </div>
 
-    <p>
-        May Jesus guide you, protect you
-        and bless you always. ✝️
-    </p>
+        <div class="section">
+            <h3>🙏 Prayer</h3>
+            <p id="prayer"></p>
+        </div>
 
-    <div class="footer">
-        Powered by CoreDataLabs
+        <div class="section">
+            <h3>🌐 Language</h3>
+            <p id="language"></p>
+        </div>
+
+        <div class="footer">
+            Powered by TapID AI • CoreDataLabs
+        </div>
+
     </div>
 
 </div>
+
+<script>
+
+async function loadCard() {
+
+    try {
+
+        // Example:
+        // /mgchurch → mgchurch
+        // /mycard   → mycard
+        // /family01 → family01
+
+        const path = window.location.pathname;
+
+        const cardId = path
+            .replace(/^\/+|\/+$/g, '')
+            .toLowerCase();
+
+        // Load card database
+        const response = await fetch('/cards.json');
+
+        if (!response.ok) {
+            throw new Error("Unable to load cards database");
+        }
+
+        const cards = await response.json();
+
+        const card = cards[cardId];
+
+        if (!card) {
+
+            document.getElementById("loading").innerHTML = `
+                <h2>Card Not Found</h2>
+                <p>Please check the TapID AI card URL.</p>
+            `;
+
+            return;
+        }
+
+        // Display card information
+
+        document.getElementById("name").textContent =
+            card.name || "";
+
+        document.getElementById("type").textContent =
+            card.type || "";
+
+        document.getElementById("verse").textContent =
+            card.verse || "";
+
+        document.getElementById("prayer").textContent =
+            card.prayer || "";
+
+        document.getElementById("language").textContent =
+            card.language || "";
+
+        document.getElementById("photo").src =
+            card.image || "";
+
+        document.getElementById("loading").style.display =
+            "none";
+
+        document.getElementById("profile").style.display =
+            "block";
+
+    } catch (error) {
+
+        document.getElementById("loading").innerHTML = `
+            <h2>TapID AI</h2>
+            <p>Unable to load the card.</p>
+        `;
+
+        console.error(error);
+    }
+}
+
+loadCard();
+
+</script>
 
 </body>
 </html>
