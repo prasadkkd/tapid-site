@@ -248,6 +248,44 @@
   }
   .logout-btn:hover{border-color:var(--gold);color:var(--gold);}
 
+
+  /* Ask AI Prayer Guide — bilingual, mobile-friendly situation picker */
+  .prayer-intro-title{font-family:'Cinzel',serif;text-align:center;color:var(--text-bright);font-size:clamp(1.35rem,5vw,2rem);line-height:1.3;margin:22px 0 16px;}
+  .prayer-intro-title .ai-mark{display:inline-block;color:var(--gold);background:rgba(241,196,15,.12);border:1px solid rgba(241,196,15,.25);border-radius:9px;padding:1px 7px;margin:0 3px;}
+  .prayer-banner{border:1px solid var(--line);border-left:5px solid #f28c28;border-radius:15px;padding:16px;background:linear-gradient(135deg,rgba(242,140,40,.11),rgba(241,196,15,.06));color:var(--text-bright);line-height:1.55;margin:14px 0 18px;}
+  .bilingual-line{display:block;color:var(--dim);font-size:.82em;margin-top:4px;line-height:1.45;}
+  .situation-trigger{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;text-align:left;background:var(--navy-2);color:var(--text-bright);border:1.5px solid var(--gold);border-radius:12px;padding:14px 15px;font:inherit;cursor:pointer;min-height:58px;}
+  .situation-trigger:focus-visible,.situation-option:focus-visible,.situation-close:focus-visible{outline:2px solid var(--gold-soft);outline-offset:3px;}
+  .situation-trigger .trigger-label{display:flex;flex-direction:column;gap:3px;}
+  .situation-trigger .trigger-te{color:var(--dim);font-size:.8rem;}
+  .situation-trigger .chevron{color:var(--dim);font-size:1.25rem;flex-shrink:0;}
+  #problemSelect{position:absolute!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important;}
+  .situation-modal{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.62);align-items:flex-end;justify-content:center;padding:0;}
+  .situation-modal.open{display:flex;}
+  .situation-sheet{width:100%;max-width:620px;max-height:min(82vh,760px);overflow:hidden;background:#f8f8fc;color:#16181c;border-radius:24px 24px 0 0;box-shadow:0 -12px 50px rgba(0,0,0,.3);display:flex;flex-direction:column;padding-bottom:env(safe-area-inset-bottom);animation:sheetup .2s ease-out;}
+  @keyframes sheetup{from{transform:translateY(22px);opacity:.7}to{transform:translateY(0);opacity:1}}
+  .situation-sheet-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 20px;border-bottom:1px solid #d9dbe2;font-size:1.05rem;font-weight:700;}
+  .situation-sheet-head small{display:block;font-size:.78rem;color:#646975;font-weight:400;margin-top:3px;}
+  .situation-close{border:0;border-radius:50%;width:38px;height:38px;background:#e9eaf0;color:#303440;font-size:1.35rem;cursor:pointer;flex-shrink:0;}
+  .situation-options{overflow-y:auto;overscroll-behavior:contain;}
+  .situation-option{display:flex;align-items:center;gap:12px;width:100%;padding:16px 20px;border:0;border-bottom:1px solid #dedfe5;background:transparent;color:#17191e;text-align:left;font:inherit;cursor:pointer;min-height:72px;}
+  .situation-option:active,.situation-option.selected{background:#fff5cf;}
+  .situation-option .situation-emoji{font-size:1.65rem;width:38px;text-align:center;flex-shrink:0;}
+  .situation-option .situation-copy{display:flex;flex-direction:column;gap:4px;flex:1;}
+  .situation-option .situation-en{font-size:1rem;font-weight:600;}
+  .situation-option .situation-te{font-size:.86rem;color:#555b67;}
+  .situation-option .radio-mark{width:21px;height:21px;border:2px solid #737987;border-radius:50%;flex-shrink:0;position:relative;}
+  .situation-option.selected .radio-mark{border-color:#b58c00;}
+  .situation-option.selected .radio-mark:after{content:'';position:absolute;inset:4px;background:#b58c00;border-radius:50%;}
+  .problem-free-label{display:block;font-weight:600;color:var(--text);font-size:.9rem;margin-bottom:7px;}
+  #problemFreeText{width:100%;min-height:105px;resize:vertical;background:var(--navy-2);color:var(--text-bright);border:1px solid var(--line);border-radius:12px;padding:13px 14px;font:inherit;font-size:.95rem;line-height:1.5;outline:none;}
+  #problemFreeText:focus{border-color:var(--gold);}
+  #problemFreeText::placeholder{color:var(--faint);}
+  .problem-helper{color:var(--dim);font-size:.78rem;line-height:1.5;margin-top:7px;}
+  .problem-result-heading{font-size:.96rem;color:var(--text);line-height:1.5;margin:18px 0 10px;}
+  @media(min-width:620px){.situation-modal{align-items:center;padding:20px}.situation-sheet{border-radius:22px;max-height:80vh}.situation-option{padding:14px 20px;min-height:66px}}
+  @media(prefers-reduced-motion:reduce){.situation-sheet{animation:none}}
+
 </style>
 </head>
 <body>
@@ -403,16 +441,31 @@
 
     <!-- TAB 3 -->
     <div class="tab-panel" data-panel="problem">
-      <div class="banner">🙏 Share what's weighing on you — in English or Telugu — and get a scripture (వాక్యం) that speaks to it, with the exact chapter &amp; verse number.</div>
-      <div class="field">
-        <label class="field-label">What are you going through?</label>
-        <select id="problemSelect"></select>
+      <h2 class="prayer-intro-title">ASK <span class="ai-mark">AI</span> PRAYER GUIDE</h2>
+      <div class="prayer-banner">🙏 <strong>Share what's weighing on you</strong> — in English or Telugu — and find Bible verses that speak to your situation, with book, chapter and verse references.
+        <span class="bilingual-line">మీ మనసులో ఉన్న ఆందోళనను తెలుగులో లేదా Englishలో చెప్పండి. మీ పరిస్థితికి సంబంధించిన బైబిల్ వాక్యాలు, అధ్యాయం మరియు వచన సంఖ్యతో పొందండి.</span>
       </div>
       <div class="field">
-        <label class="field-label">…or type it in your own words:</label>
-        <input type="text" id="problemFreeText" placeholder="e.g. I'm worried about my job, or నాకు భయంగా ఉంది">
+        <label class="field-label" for="problemSituationButton">What are you going through? <span class="bilingual-line">మీరు ప్రస్తుతం ఏ పరిస్థితిని ఎదుర్కొంటున్నారు?</span></label>
+        <button type="button" id="problemSituationButton" class="situation-trigger" aria-haspopup="dialog" aria-controls="situationModal" aria-expanded="false">
+          <span class="trigger-label"><span id="problemSituationEn">Select a situation…</span><span class="trigger-te" id="problemSituationTe">మీ పరిస్థితిని ఎంచుకోండి</span></span><span class="chevron" aria-hidden="true">▾</span>
+        </button>
+        <select id="problemSelect" aria-hidden="true" tabindex="-1"></select>
       </div>
-      <div id="problemResult"></div>
+      <div class="field">
+        <label class="problem-free-label" for="problemFreeText">Or describe it in your own words <span class="bilingual-line">లేదా మీ సమస్యను మీ మాటల్లో రాయండి</span></label>
+        <textarea id="problemFreeText" rows="3" placeholder="Example: I'm worried about my job.
+ఉదాహరణ: నాకు ఉద్యోగం గురించి ఆందోళనగా ఉంది."></textarea>
+        <div class="problem-helper">You can write in English or Telugu. మీకు సౌకర్యమైన భాషలో రాయండి.</div>
+      </div>
+      <div id="problemResult" aria-live="polite"></div>
+    </div>
+
+    <div class="situation-modal" id="situationModal" role="dialog" aria-modal="true" aria-labelledby="situationModalTitle">
+      <div class="situation-sheet">
+        <div class="situation-sheet-head"><div id="situationModalTitle">Select a situation…<small>మీ పరిస్థితిని ఎంచుకోండి</small></div><button type="button" class="situation-close" id="situationModalClose" aria-label="Close selection">×</button></div>
+        <div class="situation-options" id="situationOptions"></div>
+      </div>
     </div>
 
     <!-- TAB 4 -->
@@ -803,6 +856,65 @@ const problemSelect = document.getElementById('problemSelect');
 problemSelect.innerHTML = ["Select a situation…"].concat(PROBLEM_OPTIONS.map(p=>p[0])).map(l => `<option>${escapeHtml(l)}</option>`).join("");
 const problemFreeText = document.getElementById('problemFreeText');
 const problemResult = document.getElementById('problemResult');
+const situationModal = document.getElementById('situationModal');
+const situationOptions = document.getElementById('situationOptions');
+const situationButton = document.getElementById('problemSituationButton');
+const situationLabelEn = document.getElementById('problemSituationEn');
+const situationLabelTe = document.getElementById('problemSituationTe');
+const situationClose = document.getElementById('situationModalClose');
+const SITUATION_TELUGU = {
+  "😨 Fear / Anxiety":"భయం / ఆందోళన", "💔 Loneliness":"ఒంటరితనం", "😢 Grief / Loss":"దుఃఖం / నష్టం",
+  "🤔 Guidance / Decisions":"మార్గదర్శకత్వం / నిర్ణయాలు", "💰 Financial Worry":"ఆర్థిక చింత",
+  "😔 Weakness / Need Strength":"బలహీనత / బలం అవసరం", "❓ Doubt / Faith":"సందేహం / విశ్వాసం",
+  "🤒 Illness / Healing":"అనారోగ్యం / స్వస్థత", "🧭 Wisdom / Confusion":"జ్ఞానం / అయోమయం",
+  "🌧️ Hardship / Suffering":"కష్టాలు / బాధలు"
+};
+function updateSituationButton(){
+  const selected = problemSelect.value;
+  if(!selected || selected === "Select a situation…"){
+    situationLabelEn.textContent = "Select a situation…";
+    situationLabelTe.textContent = "మీ పరిస్థితిని ఎంచుకోండి";
+  } else {
+    situationLabelEn.textContent = selected;
+    situationLabelTe.textContent = SITUATION_TELUGU[selected] || (PROBLEM_OPTIONS.find(p=>p[0]===selected)||[])[1] || "మీ పరిస్థితి";
+  }
+  situationOptions.querySelectorAll('.situation-option').forEach(btn=>{
+    const isSelected = btn.dataset.value === selected;
+    btn.classList.toggle('selected',isSelected);
+    btn.setAttribute('aria-pressed',String(isSelected));
+  });
+}
+function openSituationModal(){
+  situationModal.classList.add('open');
+  situationButton.setAttribute('aria-expanded','true');
+  document.body.style.overflow='hidden';
+  const current = situationOptions.querySelector('.situation-option.selected') || situationOptions.querySelector('.situation-option');
+  if(current) current.focus({preventScroll:true});
+}
+function closeSituationModal(){
+  situationModal.classList.remove('open');
+  situationButton.setAttribute('aria-expanded','false');
+  document.body.style.overflow='';
+  situationButton.focus({preventScroll:true});
+}
+situationOptions.innerHTML = PROBLEM_OPTIONS.map(p=>{
+  const emoji = p[0].split(' ')[0];
+  const english = p[0].replace(/^\S+\s*/, '');
+  return `<button type="button" class="situation-option" data-value="${escapeHtml(p[0])}" aria-pressed="false"><span class="situation-emoji" aria-hidden="true">${escapeHtml(emoji)}</span><span class="situation-copy"><span class="situation-en">${escapeHtml(english)}</span><span class="situation-te">${escapeHtml(SITUATION_TELUGU[p[0]] || p[1])}</span></span><span class="radio-mark" aria-hidden="true"></span></button>`;
+}).join('');
+situationButton.addEventListener('click',openSituationModal);
+situationClose.addEventListener('click',closeSituationModal);
+situationModal.addEventListener('click',e=>{if(e.target===situationModal) closeSituationModal();});
+situationOptions.addEventListener('click',e=>{
+  const option=e.target.closest('.situation-option');
+  if(!option) return;
+  problemSelect.value=option.dataset.value;
+  problemFreeText.value='';
+  updateSituationButton();
+  closeSituationModal();
+  renderProblemMatch();
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape' && situationModal.classList.contains('open')) closeSituationModal();});
 
 function renderProblemMatch(){
   const free = problemFreeText.value.trim();
@@ -823,7 +935,7 @@ function renderProblemMatch(){
 
   if(!label){ problemResult.innerHTML = ""; return; }
   if(rows.length){
-    let html = `<p style="font-size:.88rem; color:var(--text);"><b>Vakyam for ${escapeHtml(label)} — ${rows.length} verse(s):</b></p>`;
+    let html = `<p class="problem-result-heading"><b>Bible verses for ${escapeHtml(label)} — ${rows.length} verse(s)</b><span class="bilingual-line">${rows.length} బైబిల్ వాక్యాలు — మీ పరిస్థితికి సంబంధించిన వాక్యాలు</span></p>`;
     html += rows.map(r => verseCardHtml(r, "Recommended Vakyam")).join("");
     if(prayer) html += prayerCardHtml(prayer[0], prayer[1]);
     problemResult.innerHTML = html;
@@ -832,7 +944,8 @@ function renderProblemMatch(){
     problemResult.innerHTML = `<div class="msg warn">No matching verse found yet for that — try a different wording.</div>`;
   }
 }
-problemSelect.addEventListener('change', () => { problemFreeText.value=""; renderProblemMatch(); });
+problemSelect.addEventListener('change', () => { problemFreeText.value=""; updateSituationButton(); renderProblemMatch(); });
+updateSituationButton();
 problemFreeText.addEventListener('input', renderProblemMatch);
 
 /* ============================================================
